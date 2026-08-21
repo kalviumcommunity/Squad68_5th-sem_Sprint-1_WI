@@ -141,3 +141,142 @@ def render_ml_simulator():
             max_value=15,
             value=3
         )
+        traffic = st.number_input(
+            "Expected Visitors",
+            min_value=1000,
+            max_value=500000,
+            value=50000,
+            step=1000
+        )
+
+    st.divider()
+
+    # ---------------------------------------------------------
+    # ACTION BUTTONS
+    # ---------------------------------------------------------
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        run_prediction = st.button(
+            "Run Prediction",
+            type="primary",
+            use_container_width=True
+        )
+
+    with col2:
+        reset = st.button(
+            "Reset Scenario",
+            use_container_width=True
+        )
+
+    if reset:
+        st.rerun()
+
+    # ---------------------------------------------------------
+    # PREDICTION
+    # ---------------------------------------------------------
+
+    if run_prediction:
+
+        probability, expected_enrollments = calculate_prediction(
+            price,
+            discount,
+            rating,
+            preview_length,
+            traffic
+        )
+
+        st.divider()
+
+        st.subheader("Prediction Results")
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric(
+                "Predicted Conversion Probability",
+                f"{probability * 100:.1f}%"
+            )
+
+        with col2:
+            st.metric(
+                "Expected Enrollments",
+                f"{expected_enrollments:,}"
+            )
+
+        with col3:
+            st.metric(
+                "Scenario Price",
+                f"₹{price:,}"
+            )
+
+        # -----------------------------------------------------
+        # FEATURE IMPORTANCE
+        # -----------------------------------------------------
+
+        st.subheader("Feature Importance")
+
+        feature_data = {
+            "Price": 38,
+            "Preview Length": 25,
+            "Rating": 18,
+            "Discount": 15,
+            "Traffic": 4
+        }
+
+        for feature, importance in feature_data.items():
+
+            st.write(
+                f"**{feature}** · {importance}%"
+            )
+
+            st.progress(
+                importance / 100
+            )
+
+        # -----------------------------------------------------
+        # RECOMMENDATIONS
+        # -----------------------------------------------------
+
+        st.subheader("AI Recommended Actions")
+
+        if price > 8000:
+
+            st.warning(
+                "High price friction detected. "
+                "Consider testing a lower price or targeted discount."
+            )
+
+        if preview_length >= 8:
+
+            st.warning(
+                "Preview may be too long. "
+                "Consider reducing the introduction to improve retention."
+            )
+
+        if rating < 4.0:
+
+            st.warning(
+                "Course rating is below the preferred range. "
+                "Improving learner satisfaction may increase conversion."
+            )
+
+        if discount >= 15:
+
+            st.success(
+                "Current discount level may help reduce checkout friction."
+            )
+
+        st.success(
+            f"Scenario predicts approximately "
+            f"**{expected_enrollments:,} enrollments** "
+            f"from {traffic:,} visitors."
+        )
+
+    else:
+
+        st.caption(
+            "Adjust the scenario above and click Run Prediction "
+            "to see the simulated outcome."
+        )
