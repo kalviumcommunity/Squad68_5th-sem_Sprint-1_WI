@@ -1,0 +1,7 @@
+course_id,topic,coverage
+101,Python,0.95
+101,Statistics,0.80
+101,SQL,0.70
+101,LLM,0.00
+101,Machine Learning,0.90
+101,Data Science,0.85

@@ -48,3 +48,47 @@ def load_preview_events():
     except Exception as error:
         print(f"Error loading preview data: {error}")
         return None
+
+
+def load_searches():
+
+    file_path = DATA_DIR / "searches.csv"
+
+    try:
+        data = pd.read_csv(file_path)
+
+        print(f"\nSuccessfully loaded: {file_path}")
+        print(f"Rows: {data.shape[0]}")
+        print(f"Columns: {data.shape[1]}")
+
+        return data
+
+    except FileNotFoundError:
+        print("searches.csv not found")
+        return None
+
+    except Exception as error:
+        print(f"Error loading search data: {error}")
+        return None
+
+
+def load_course_topics():
+
+    file_path = DATA_DIR / "course_topics.csv"
+
+    try:
+        data = pd.read_csv(file_path)
+
+        print(f"\nSuccessfully loaded: {file_path}")
+        print(f"Rows: {data.shape[0]}")
+        print(f"Columns: {data.shape[1]}")
+
+        return data
+
+    except FileNotFoundError:
+        print("course_topics.csv not found")
+        return None
+
+    except Exception as error:
+        print(f"Error loading course topics: {error}")
+        return None
