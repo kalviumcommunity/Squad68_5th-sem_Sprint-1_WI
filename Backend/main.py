@@ -1,6 +1,7 @@
 import preprocessing.data_loader as data_loader
 import analytics.funnel as funnel
 import analytics.retention as retention
+import visualization.retention_chart as retention_chart
 
 
 courses = data_loader.load_courses()
@@ -17,6 +18,7 @@ if courses is not None and preview_events is not None:
     funnel_data = funnel.calculate_funnel(course)
 
     print("\nFunnel Analysis:")
+
     print(f"Course Views: {funnel_data['course_views']}")
     print(f"Preview Clicks: {funnel_data['preview_clicks']}")
     print(f"Enrollments: {funnel_data['enrollments']}")
@@ -28,6 +30,7 @@ if courses is not None and preview_events is not None:
     )
 
     print("\nPreview Retention:")
+
     print(
         retention_data[
             ["video_second", "viewers", "retention"]
@@ -41,12 +44,19 @@ if courses is not None and preview_events is not None:
     print("\nSharp Drop-offs:")
 
     if sharp_dropoffs.empty:
+
         print("No sharp drop-off detected.")
 
     else:
+
         for _, row in sharp_dropoffs.iterrows():
 
             print(
                 f"At {row['video_second']} seconds: "
                 f"{row['drop']:.2f} percentage point drop"
             )
+
+    retention_chart.create_retention_chart(
+        retention_data,
+        course["title"]
+    )
