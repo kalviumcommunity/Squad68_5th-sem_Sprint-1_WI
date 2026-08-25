@@ -3,6 +3,7 @@ import analytics.funnel as funnel
 import analytics.retention as retention
 import visualization.retention_chart as retention_chart
 import analytics.content_match as content_match
+import insights.diagnosis as diagnosis
 
 
 courses = data_loader.load_courses()
@@ -87,3 +88,14 @@ if (
             ]
         ]
     )
+
+    insights = diagnosis.generate_diagnosis(
+        funnel_data,
+        retention_data,
+        content_data
+    )
+
+    print("\nCourse Diagnosis:")
+
+    for insight in insights:
+        print(f"- {insight}")
