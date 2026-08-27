@@ -1,47 +1,116 @@
+def analyze_conversion(conversion_rate):
+
+    if conversion_rate < 5:
+        return "Low"
+
+    elif conversion_rate < 10:
+        return "Moderate"
+
+    else:
+        return "Good"
+
+
+def analyze_retention(retention_data):
+
+    if retention_data.empty:
+        return "No Data"
+
+    average_retention = retention_data["retention"].mean()
+
+    if average_retention < 40:
+        return "Critical"
+
+    elif average_retention < 70:
+        return "Warning"
+
+    else:
+        return "Healthy"
+
+
+def find_content_gaps(content_data):
+
+    missing_topics = content_data[
+        content_data["status"] == "Missing"
+    ]
+
+    missing_topics = missing_topics.sort_values(
+        by="search_count",
+        ascending=False
+    )
+
+    return missing_topics
+
+
 def generate_diagnosis(
     funnel_data,
     retention_data,
     content_data
 ):
 
-    insights = []
+    diagnosis = []
 
     conversion_rate = funnel_data["conversion_rate"]
 
-    # Check conversion rate
-    if conversion_rate < 5:
-        insights.append(
-            f"Low conversion rate detected: "
-            f"{conversion_rate:.2f}%"
+    # Conversion analysis
+    conversion_status = analyze_conversion(
+        conversion_rate
+    )
+
+    if conversion_status == "Low":
+
+        diagnosis.append(
+            f"Conversion rate is low at "
+            f"{conversion_rate:.2f}%."
         )
 
-    # Check preview drop-off
-    if not retention_data.empty:
+    # Retention analysis
+    retention_status = analyze_retention(
+        retention_data
+    )
 
-        sharp_dropoffs = retention_data[
-            retention_data["drop"] >= 20
-        ]
+    if retention_status == "Critical":
 
-        for _, row in sharp_dropoffs.iterrows():
+        diagnosis.append(
+            "Preview retention is critically low."
+        )
 
-            minutes = int(row["video_second"] // 60)
-            seconds = int(row["video_second"] % 60)
+    elif retention_status == "Warning":
 
-            insights.append(
-                f"Major preview drop-off detected at "
-                f"{minutes:02d}:{seconds:02d}"
-            )
+        diagnosis.append(
+            "Preview retention needs improvement."
+        )
 
-    # Check missing content
-    missing_topics = content_data[
-        content_data["status"] == "Missing"
+    # Sharp drop-off analysis
+    sharp_dropoffs = retention_data[
+        retention_data["drop"] >= 20
     ]
 
-    for _, row in missing_topics.iterrows():
+    for _, row in sharp_dropoffs.iterrows():
 
-        insights.append(
-            f"High-demand topic '{row['search_term']}' "
-            f"is missing from the course"
+        minutes = int(row["video_second"] // 60)
+        seconds = int(row["video_second"] % 60)
+
+        diagnosis.append(
+            f"Major preview drop-off detected at "
+            f"{minutes:02d}:{seconds:02d}."
         )
 
-    return insights
+    # Content gap analysis
+    content_gaps = find_content_gaps(
+        content_data
+    )
+
+    for _, row in content_gaps.iterrows():
+
+        diagnosis.append(
+            f"High-demand topic "
+            f"'{row['search_term']}' "
+            f"is missing from the course."
+        )
+
+    return {
+        "conversion_status": conversion_status,
+        "retention_status": retention_status,
+        "content_gaps": content_gaps,
+        "diagnosis": diagnosis
+    }

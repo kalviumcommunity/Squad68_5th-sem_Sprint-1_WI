@@ -89,13 +89,44 @@ if (
         ]
     )
 
-    insights = diagnosis.generate_diagnosis(
+
+    diagnosis_result = diagnosis.generate_diagnosis(
         funnel_data,
         retention_data,
         content_data
     )
 
-    print("\nCourse Diagnosis:")
+    print("\nCourse Health:")
 
-    for insight in insights:
+    print(
+        f"Conversion Status: "
+        f"{diagnosis_result['conversion_status']}"
+    )
+
+    print(
+        f"Retention Status: "
+        f"{diagnosis_result['retention_status']}"
+    )
+
+    print("\nContent Gaps:")
+
+    content_gaps = diagnosis_result["content_gaps"]
+
+    if content_gaps.empty:
+
+        print("No missing topics detected.")
+
+    else:
+
+        for _, row in content_gaps.iterrows():
+
+            print(
+                f"- {row['search_term']} "
+                f"({row['search_count']} searches)"
+            )
+
+    print("\nDiagnosis:")
+
+    for insight in diagnosis_result["diagnosis"]:
+
         print(f"- {insight}")
