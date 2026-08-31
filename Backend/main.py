@@ -4,6 +4,7 @@ import analytics.retention as retention
 import visualization.retention_chart as retention_chart
 import analytics.content_match as content_match
 import insights.diagnosis as diagnosis
+import analytics.course_features as course_features
 
 
 courses = data_loader.load_courses()
@@ -130,3 +131,56 @@ if (
     for insight in diagnosis_result["diagnosis"]:
 
         print(f"- {insight}")
+
+
+
+        
+
+    preview_completion = (
+        course_features.calculate_preview_completion(
+            retention_data
+        )
+    )
+
+    average_watch_time = (
+        course_features.calculate_average_watch_time(
+            retention_data
+        )
+    )
+
+    content_match_score = (
+        course_features.calculate_content_match(
+            content_data
+        )
+    )
+
+    print("\nCourse Features:")
+
+    print(
+        f"Preview Completion Rate: "
+        f"{preview_completion:.2f}%"
+    )
+
+    print(
+        f"Average Preview Watch Time: "
+        f"{average_watch_time:.2f} seconds"
+    )
+
+    print(
+        f"Content Match Score: "
+        f"{content_match_score:.2f}%"
+    )
+
+    print(
+        f"Course Price: ₹{course['price']}"
+    )
+
+    print(
+        f"Course Rating: "
+        f"{course['rating']}"
+    )
+
+    print(
+        f"Number of Reviews: "
+        f"{course['reviews']}"
+    )
