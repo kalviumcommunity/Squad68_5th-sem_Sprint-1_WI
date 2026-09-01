@@ -5,6 +5,7 @@ import visualization.retention_chart as retention_chart
 import analytics.content_match as content_match
 import insights.diagnosis as diagnosis
 import analytics.course_features as course_features
+import ml.features as features
 
 
 courses = data_loader.load_courses()
@@ -20,19 +21,74 @@ if (
     and course_topics is not None
 ):
 
+    # -----------------------------
+    # ML FEATURE ENGINEERING
+    # -----------------------------
+
+    feature_data = features.create_features(courses)
+
+    print("\nML Features:")
+
+    print(
+        feature_data[
+            [
+                "title",
+                "views",
+                "preview_clicks",
+                "enrollments",
+                "price",
+                "rating",
+                "reviews",
+                "conversion_rate",
+                "preview_click_rate",
+                "review_score"
+            ]
+        ]
+    )
+
+
+    # -----------------------------
+    # SELECT COURSE
+    # -----------------------------
+
     course = courses.iloc[0]
 
     print("\nSelected Course:")
     print(course["title"])
 
+
+    # -----------------------------
+    # FUNNEL ANALYSIS
+    # -----------------------------
+
     funnel_data = funnel.calculate_funnel(course)
 
     print("\nFunnel Analysis:")
 
-    print(f"Course Views: {funnel_data['course_views']}")
-    print(f"Preview Clicks: {funnel_data['preview_clicks']}")
-    print(f"Enrollments: {funnel_data['enrollments']}")
-    print(f"Conversion Rate: {funnel_data['conversion_rate']:.2f}%")
+    print(
+        f"Course Views: "
+        f"{funnel_data['course_views']}"
+    )
+
+    print(
+        f"Preview Clicks: "
+        f"{funnel_data['preview_clicks']}"
+    )
+
+    print(
+        f"Enrollments: "
+        f"{funnel_data['enrollments']}"
+    )
+
+    print(
+        f"Conversion Rate: "
+        f"{funnel_data['conversion_rate']:.2f}%"
+    )
+
+
+    # -----------------------------
+    # PREVIEW RETENTION
+    # -----------------------------
 
     retention_data = retention.calculate_retention(
         preview_events,
@@ -43,9 +99,18 @@ if (
 
     print(
         retention_data[
-            ["video_second", "viewers", "retention"]
+            [
+                "video_second",
+                "viewers",
+                "retention"
+            ]
         ]
     )
+
+
+    # -----------------------------
+    # SHARP DROP-OFF DETECTION
+    # -----------------------------
 
     sharp_dropoffs = retention.find_sharp_dropoff(
         retention_data
@@ -63,13 +128,24 @@ if (
 
             print(
                 f"At {row['video_second']} seconds: "
-                f"{row['drop']:.2f} percentage point drop"
+                f"{row['drop']:.2f} "
+                f"percentage point drop"
             )
+
+
+    # -----------------------------
+    # RETENTION VISUALIZATION
+    # -----------------------------
 
     retention_chart.create_retention_chart(
         retention_data,
         course["title"]
     )
+
+
+    # -----------------------------
+    # CONTENT MATCH ANALYSIS
+    # -----------------------------
 
     content_data = content_match.analyze_content_match(
         searches,
@@ -91,6 +167,10 @@ if (
     )
 
 
+    # -----------------------------
+    # COURSE DIAGNOSIS
+    # -----------------------------
+
     diagnosis_result = diagnosis.generate_diagnosis(
         funnel_data,
         retention_data,
@@ -109,6 +189,11 @@ if (
         f"{diagnosis_result['retention_status']}"
     )
 
+
+    # -----------------------------
+    # CONTENT GAPS
+    # -----------------------------
+
     print("\nContent Gaps:")
 
     content_gaps = diagnosis_result["content_gaps"]
@@ -126,6 +211,11 @@ if (
                 f"({row['search_count']} searches)"
             )
 
+
+    # -----------------------------
+    # DIAGNOSIS
+    # -----------------------------
+
     print("\nDiagnosis:")
 
     for insight in diagnosis_result["diagnosis"]:
@@ -133,8 +223,9 @@ if (
         print(f"- {insight}")
 
 
-
-        
+    # -----------------------------
+    # COURSE FEATURES
+    # -----------------------------
 
     preview_completion = (
         course_features.calculate_preview_completion(
@@ -172,7 +263,8 @@ if (
     )
 
     print(
-        f"Course Price: ₹{course['price']}"
+        f"Course Price: "
+        f"₹{course['price']}"
     )
 
     print(
