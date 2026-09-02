@@ -6,6 +6,7 @@ import analytics.content_match as content_match
 import insights.diagnosis as diagnosis
 import analytics.course_features as course_features
 import ml.features as features
+import ml.model as model
 
 
 courses = data_loader.load_courses()
@@ -26,6 +27,21 @@ if (
     # -----------------------------
 
     feature_data = features.create_features(courses)
+
+    conversion_model, ml_results = model.train_conversion_model(
+    feature_data
+    )
+    print("\nML Conversion Prediction:")
+    print(
+        ml_results[
+            [
+            "title",
+            "conversion_rate",
+            "low_conversion",
+            "prediction"
+            ]
+        ]
+    )
 
     print("\nML Features:")
 
