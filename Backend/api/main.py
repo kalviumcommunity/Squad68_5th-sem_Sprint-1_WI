@@ -3,43 +3,46 @@
 LearnInsight AI - Backend API Endpoints
 =========================================================
 
-Base URL (Local):
-http://127.0.0.1:8000
+PRODUCTION BASE URL:
+https://learninsight-nxuo.onrender.com
 
-API Documentation:
-http://127.0.0.1:8000/docs
+API DOCUMENTATION:
+https://learninsight-nxuo.onrender.com/docs
 
 
-AVAILABLE ENDPOINTS
+AVAILABLE API ENDPOINTS
 ---------------------------------------------------------
 
 1. Health Check
-GET /
+GET:
+https://learninsight-nxuo.onrender.com/
+
 Purpose:
 Checks whether the backend API is running.
 
-Example:
-http://127.0.0.1:8000/
-
 
 2. Get All Courses
-GET /api/courses
+GET:
+https://learninsight-nxuo.onrender.com/api/courses
+
 Purpose:
 Returns information about all available courses.
 
-Example:
-http://127.0.0.1:8000/api/courses
-
 
 3. Get Course Analysis
-GET /api/courses/{course_id}
+GET:
+https://learninsight-nxuo.onrender.com/api/courses/{course_id}
+
 Purpose:
 Returns complete analysis for a specific course.
 
 Example:
-http://127.0.0.1:8000/api/courses/101
+https://learninsight-nxuo.onrender.com/api/courses/101
 
-The response includes:
+
+COURSE ANALYSIS RESPONSE INCLUDES
+---------------------------------------------------------
+
 - Course information
 - Views
 - Preview clicks
@@ -55,16 +58,20 @@ The response includes:
 - Diagnosis
 
 
-IMPORTANT FOR FRONTEND TEAM
+FOR FRONTEND TEAM
 ---------------------------------------------------------
 
-Use the API endpoints above to fetch backend data.
+Use the PRODUCTION BASE URL to connect the frontend
+with the deployed backend.
 
-For example, to get the analysis of course 101:
+Example:
 
-GET http://127.0.0.1:8000/api/courses/101
+GET https://learninsight-nxuo.onrender.com/api/courses
+
+GET https://learninsight-nxuo.onrender.com/api/courses/101
 
 The frontend can use the JSON response to display:
+
 - Dashboard statistics
 - Conversion rate
 - Course health
@@ -73,15 +80,19 @@ The frontend can use the JSON response to display:
 - ML prediction
 - Diagnosis
 
-The /docs page can be used to test all APIs interactively.
+
+API DOCUMENTATION
+---------------------------------------------------------
+
+Interactive Swagger documentation:
+
+https://learninsight-nxuo.onrender.com/docs
+
 
 NOTE:
-The above URLs are for local development.
-After deployment, replace:
-
-http://127.0.0.1:8000
-
-with the deployed backend URL.
+The backend is deployed on Render and is publicly accessible.
+The frontend should use the production URLs above instead
+of the local URL (http://127.0.0.1:8000).
 
 
 =========================================================
